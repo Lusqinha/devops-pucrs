@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Infraestrutura DevOps - Instancia EC2
+
+Parameters:
+  KeyName:
+    Description: Nome do par de chaves SSH para acesso a EC2
+    Type: String
+    Default: devops-fase1-key
+
+  InstanceType:
+    Description: Tipo da instancia EC2
+    Type: String
+    Default: t2.micro
+
+Resources:
+
+  DevOpsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group para a aplicacao
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 5000
+          ToPort: 5000
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: devops-fase1-sg
+
+  DevOpsEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      ImageId: ami-0c02fb55956c7d316
+      SecurityGroups:
+        - !Ref DevOpsSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          yum install -y docker
+          systemctl start docker
+          systemctl enable docker
+          docker pull python:3.11-slim
+      Tags:
+        - Key: Name
+          Value: devops-fase1-ec2
+
+Outputs:
+  EC2PublicIP:
+    Description: IP publico da instancia EC2
+    Value: !GetAtt DevOpsEC2Instance.PublicIp
+
+  EC2InstanceId:
+    Description: ID da instancia EC2
+    Value: !Ref DevOpsEC2Instance
