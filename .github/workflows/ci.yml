@@ -1,4 +1,4 @@
-name: Pipeline CI - DevOps Fase 1
+name: Pipeline CI - DevOps Fase 2
 
 on:
   push:
