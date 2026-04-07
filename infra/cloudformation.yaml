@@ -5,7 +5,7 @@ Parameters:
   KeyName:
     Description: Nome do par de chaves SSH para acesso a EC2
     Type: String
-    Default: devops-fase1-key
+    Default: devops-fase2-key
 
   InstanceType:
     Description: Tipo da instancia EC2
@@ -33,7 +33,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: devops-fase1-sg
+          Value: devops-fase2-sg
 
   DevOpsEC2Instance:
     Type: AWS::EC2::Instance
@@ -53,7 +53,7 @@ Resources:
           docker pull python:3.11-slim
       Tags:
         - Key: Name
-          Value: devops-fase1-ec2
+          Value: devops-fase2-ec2
 
 Outputs:
   EC2PublicIP:
